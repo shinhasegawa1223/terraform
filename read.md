@@ -17,3 +17,25 @@ ECR_REPOSITORY_NAME → Terraform で指定した repository_name
 push-backend-to-ecr.yml を .github/workflows/ にコミット。
 
 backend/ 以下のコードを main ブランチにプッシュすると、自動で Docker イメージがビルドされ ECR にプッシュされます。
+
+---
+
+GitHub Actions で使う Secrets は以下の３つを登録すれば足ります。
+
+AWS_ROLE_TO_ASSUME
+
+Terraform の output "iam_role_arn" で取得できる IAM ロールの ARN
+
+例：arn:aws:iam::123456789012:role/github-actions-ecr-push-role
+
+AWS_REGION
+
+Terraform の var.aws_region と同じ値
+
+例：ap-northeast-1
+
+ECR_REPOSITORY_NAME
+
+Terraform の var.repository_name と同じリポジトリ名
+
+例：my-backend

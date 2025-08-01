@@ -1,4 +1,10 @@
+ほぼ問題ありませんが、`aws_iam_openid_connect_provider` を Terraform 管理下で作成するなら、同じプロバイダーを参照する `data` ブロックは不要です。リソースを作ったのであれば、以降はそのリソースの ARN を直接使いましょう。
 
+---
+
+### 修正版 iam.tf
+
+```hcl
 provider "aws" {
   region = var.aws_region
 }
@@ -77,3 +83,12 @@ resource "aws_iam_role_policy_attachment" "attach_ecr_push" {
   role       = aws_iam_role.github_ecr_push.name
   policy_arn = aws_iam_policy.ecr_push_policy.arn
 }
+```
+
+#### ポイントまとめ
+
+- **`resource "aws_iam_openid_connect_provider"`** を作成したら、以降は `aws_iam_openid_connect_provider.github.arn` を使う。
+- 同じ URL を参照する `data "aws_iam_openid_connect_provider"` は削除してください。
+- `data "aws_caller_identity"` はそのまま、動的にアカウント ID を取得するのに使います。
+
+これで、Terraform 管理下で OIDC プロバイダーを作成し、その ARN を IAM ロールの信頼ポリシーに組み込む一連の流れがスッキリ整理できます。
